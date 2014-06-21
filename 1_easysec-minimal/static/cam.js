@@ -6,7 +6,7 @@ var connect = function() {
 
     easyrtc.enableAudio(false);
     easyrtc.enableVideo(true);
-    easyrtc.setUserName("cam");
+    easyrtc.setUsername("cam");
     easyrtc.setRoomOccupantListener(roomOccupantListener);
 
     // Initialize the local media via getUserMedia()

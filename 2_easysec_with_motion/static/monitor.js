@@ -7,7 +7,7 @@ var camListObj = {};
 var connect = function() {
     easyrtc.enableAudio(false);
     easyrtc.enableVideo(false);
-    easyrtc.setUserName("monitor");
+    easyrtc.setUsername("monitor");
     easyrtc.setPeerListener(peerListener);
     easyrtc.setRoomOccupantListener(roomOccupantListener);
     easyrtc.connect("easysec", loginSuccess, loginFailure);

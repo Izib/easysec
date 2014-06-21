@@ -1,6 +1,6 @@
 {
-  "name"        : "easyrtc_easysec",
-  "version"     : "0.1.0",
+  "name"        : "easyrtc_easysec_motion",
+  "version"     : "0.1.1",
   "author"      : "Priologic Software Inc. <info@priologic.com> (http://priologic.com/)",
   "description" : "EasyRTC example app. A security system using WebRTC",
 
@@ -9,13 +9,13 @@
   },
 
   "dependencies" : {
-    "easyrtc"   : ">=0.10",
-    "express"   : "*",
-    "socket.io" : "*"
+    "easyrtc"   : "1.0.x",
+    "express"   : "3.x.x",
+    "socket.io" : "0.9.x"
   },
 
   "license"     : "BSD2",
-
+  "private"     : true,
   "engines": {
     "node"      : ">=0.8"
   }
