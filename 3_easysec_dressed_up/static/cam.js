@@ -113,6 +113,26 @@ var sendReportDelayDuringNoMotion = 10000;
 var lastReportSentDate = 0;
 var isMotionLastSeen = false;
 
+// initialize thresholdField with code value.
+$("#thresholdField").val(hitThreshold);
+$("#thresholdField").change(function() {
+    // update the threshold value after the person has had time to finish typing.
+    setTimeout( function() {
+       try {
+        var val = parseInt($("#thresholdField").val());
+        if( val > 1000 && val < 40000 ) {
+            hitThreshold = val;
+            console.log("hit threshold updated to " + val);
+        }
+        else {
+            console.log("out of range hit threshold " + val);
+        }
+      } catch( oops) {
+           console.log("bad hitThreshold value");
+      };
+    }, 5000);
+});
+
 function compareFrames() {
     if( !smallFrame) {
         smallFrame = document.createElement("canvas");
