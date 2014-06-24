@@ -6,7 +6,7 @@ var connect = function() {
 
     easyrtc.enableAudio(false);
     easyrtc.enableVideo(true);
-    easyrtc.setUserName("cam");
+    easyrtc.setUsername("cam");
     easyrtc.setPeerListener(peerListener);
     easyrtc.setRoomOccupantListener(roomOccupantListener);
 
@@ -48,11 +48,11 @@ var loginSuccess = function(easyrtcid) {
 var roomOccupantListener = function(roomName, clientListObj, myDetails) {
     console.debug("Running roomOccupantListener for room ["+roomName+"] with client list object:", clientListObj);
     console.debug("My details:", myDetails);
-
+    console.log("Monitor List!", monitorList);
     //
     // remove any monitors that have gone away
     //
-    for( monitor in monitorList) {
+    for( var monitor in monitorList) {
         if( !clientListObj[monitor]) {
            delete monitorList[monitor];
         }
@@ -103,8 +103,15 @@ var lastFrame = null;
 var currentFrame = null;
 var smallFrame;
 var ampThreshold = 30;
-var hitThreshold = 1000;
-var lastMotion = false;
+var hitThreshold = 14000;
+
+var motionSeenReportDelay = 5000;
+var isLastReportMotionSeen = false;
+var lastReportMotionSeenDate = 0;
+var sendReportDelayDuringMotion = 2000;
+var sendReportDelayDuringNoMotion = 10000;
+var lastReportSentDate = 0;
+var isMotionLastSeen = false;
 
 function compareFrames() {
     if( !smallFrame) {
@@ -119,34 +126,64 @@ function compareFrames() {
     var hits = 0;
     if( lastFrame) {
         var n = currentFrame.length;
-        for( i = 0; i < n; i++) {
+        for( var i = 0; i < n; i++) {
             if( Math.abs(currentFrame[i]-lastFrame[i]) > ampThreshold) {
                 hits++;
             }
         }
     }
     lastFrame = currentFrame;
-    var sawMotion = (hits > hitThreshold);
-    if( lastMotion != sawMotion) {
-        lastMotion = sawMotion;
-        reportMotion(sawMotion);
+    var isMotionNowSeen = (hits > hitThreshold);
+
+
+    if(isMotionNowSeen){
+        if (!isLastReportMotionSeen){
+            reportMotion(isMotionNowSeen);
+            console.log("Reporting NEW motion ["+hits+"]>["+hitThreshold+"]");
+        }
+        else if((Date.now() - sendReportDelayDuringMotion) > lastReportSentDate){
+            reportMotion(isMotionNowSeen);
+            console.log("Updating motion screenshot ["+hits+"]>["+hitThreshold+"]");
+        }
+        else {
+            console.log("Marking CONTINUED motion ["+hits+"]>["+hitThreshold+"]");
+            lastReportMotionSeenDate = Date.now();
+        }
+    }
+    else if (isLastReportMotionSeen) {
+        // Report if motion no longer detected after a suitable time period
+        if ((Date.now() - lastReportMotionSeenDate) > motionSeenReportDelay){
+            console.log("Reporting NO MORE motion after time period ["+hits+"]>["+hitThreshold+"]");
+            reportMotion(isMotionNowSeen);
+        }
+    }
+    else if ((Date.now() - lastReportSentDate) > sendReportDelayDuringNoMotion){
+        console.log("Reporting CONTINUE NO motion after time period ["+hits+"]>["+hitThreshold+"]");
+        reportMotion(isMotionNowSeen);
     }
 
-    return sawMotion;
+    else {
+        console.log("End of line", isMotionNowSeen);
+    }
+
+    return isMotionNowSeen;
 }
 
 // Send motion status to all monitors
-function reportMotion(sawMotion) {
-    if (sawMotion) {
+function reportMotion(isMotionSeen) {
+    if (isMotionSeen) {
         console.debug("Motion detected.");
+        lastReportMotionSeenDate = Date.now();
     }
     else {
         console.debug("Motion not detected.");
     }
 
-    for( monitor in monitorList) {
-         easyrtc.sendData(monitor, "motionState", {"motion":sawMotion}, function(){});
+    for( var monitor in monitorList) {
+         easyrtc.sendData(monitor, "motionState", {"motion":isMotionSeen}, function(){});
     }
+    lastReportSentDate = Date.now();
+    isLastReportMotionSeen = isMotionSeen;
 }
 
 // Initiate motion detect to scan video four times a second
