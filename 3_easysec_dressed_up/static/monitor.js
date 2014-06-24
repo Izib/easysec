@@ -7,7 +7,7 @@ var camListObj = {};
 var connect = function() {
     easyrtc.enableAudio(false);
     easyrtc.enableVideo(false);
-    easyrtc.setUserName("monitor");
+    easyrtc.setUsername("monitor");
     easyrtc.setPeerListener(peerListener);
     easyrtc.setRoomOccupantListener(roomOccupantListener);
     easyrtc.connect("easysec", loginSuccess, loginFailure);
@@ -40,15 +40,17 @@ var peerListener = function(senderEasyrtcid, msgType, msgData, target) {
         case "snapshot":
             console.log("["+senderEasyrtcid+"] Receiving snapshot", msgData);
             $("#snapshot_" + senderEasyrtcid).attr("src", msgData);
-            $("#snapshot_" + senderEasyrtcid).show();
-            $("#video_" + senderEasyrtcid).hide();
+            if (camListObj[senderEasyrtcid] && !camListObj[senderEasyrtcid].isLive){
+                $("#snapshot_" + senderEasyrtcid).show();
+                $("#video_" + senderEasyrtcid).hide();
+            }
             break;
         case "motionState":
             $("#monitor_" + senderEasyrtcid).css("border-color", msgData.motion ? "red" : "#5c5c5c");
             
             setTimeout(function() {
                 refreshSnapshot(senderEasyrtcid);
-            }, 2000);
+            }, 200);
 
             break;
         default:

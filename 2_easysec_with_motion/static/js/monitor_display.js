@@ -75,7 +75,7 @@ function initApplication()
 		// Find parent ID
 		var parentID = '#'+ $(this).parent().attr('id');
 		
-		// Udpate Video State to Play
+		// Update Video State to Play
 		$(parentID).attr('state','play');
 		
 		// Hide Play button and show Pause button
@@ -92,7 +92,7 @@ function initApplication()
 		// Find parent ID
 		var parentID = '#'+ $(this).parent().attr('id');
 		
-		// Udpate Video State to Play
+		// Update Video State to Play
 		$(parentID).attr('state','pause');
 		
 		// Hide Play button and show Pause button
@@ -258,7 +258,7 @@ function initNewMonitorControls(peerEasyrtcid)
 		// Find parent ID
 		var parentID = '#'+ $(this).parent().attr('id');
 		
-		// Udpate Video State to Play
+		// Update Video State to Play
 		$(parentID).attr('state','play');
 		
 		// Hide Play button and show Pause button
@@ -277,7 +277,7 @@ function initNewMonitorControls(peerEasyrtcid)
 		// Find parent ID
 		var parentID = '#'+ $(this).parent().attr('id');
 		
-		// Udpate Video State to Play
+		// Update Video State to Play
 		$(parentID).attr('state','pause');
 		
 		// Hide Play button and show Pause button
