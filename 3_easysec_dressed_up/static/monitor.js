@@ -197,7 +197,7 @@ var toggleSize = function(peerEasyrtcid) {
         camListObj[peerEasyrtcid].isBig = true;
 
         $("#monitor_" + peerEasyrtcid).width(440);
-        $("#monitor_" + peerEasyrtcid).height(320);
+        $("#monitor_" + peerEasyrtcid).height(330);
         $("#monitor_" + peerEasyrtcid + " div").addClass('large');
     }
 };
